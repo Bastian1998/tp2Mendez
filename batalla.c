@@ -44,7 +44,6 @@ personaje_t generarPersonajeEspecial(char inicialDePersonaje, juego_t *juego){
         } while(juego -> terreno[coordX][coordY] == ELFO);
         personaje.ataque = 10 + juego -> plus_rohan;
         personaje.vida = 200 - juego -> plus_rohan;
-        juego -> terreno[coordX][coordY] = ELFO;
     }else{
         do{
             coordY = numeroRandom(MAX_TERRENO_FIL/2 + 1, MAX_TERRENO_FIL - 1);
@@ -52,7 +51,6 @@ personaje_t generarPersonajeEspecial(char inicialDePersonaje, juego_t *juego){
         } while (juego -> terreno[coordX][coordY] == URUKHAI);
         personaje.ataque = 10 + juego -> plus_isengard;
         personaje.vida = 200 - juego -> plus_isengard;
-        juego -> terreno[coordX][coordY] = URUKHAI;
     }
     personaje.fila = coordY;
     personaje.columna = coordX;
@@ -108,4 +106,24 @@ void inicializar_juego(juego_t* juego){
         juego -> plus_isengard = calcularPlus(intensidad1);
     }
     asignarPersonajesEspeciales(MAX_PERSONAJES_ESPECIALES, juego);
+}
+
+void posicionar_personaje(juego_t* juego, personaje_t personaje){
+    if (personaje.codigo == ELFO){
+        juego -> terreno[personaje.columna][personaje.fila] = ELFO;
+        juego -> rohan[juego ->cantidad_rohan] = personaje;
+        juego -> cantidad_rohan++;
+    }else if (personaje.codigo == URUKHAI){
+        juego -> terreno[personaje.columna][personaje.fila] = URUKHAI;
+        juego -> isengard[juego ->cantidad_isengard] = personaje;
+        juego -> cantidad_isengard++;
+    }else if (personaje.codigo == HUMANO){
+        juego -> terreno[personaje.columna][personaje.fila] = HUMANO;
+        juego -> rohan[juego ->cantidad_rohan] = personaje;
+        juego -> cantidad_isengard++;
+    }else{
+        juego -> terreno[personaje.columna][personaje.fila] = ORCO;
+        juego -> isengard[juego ->cantidad_isengard] = personaje;
+        juego -> cantidad_isengard++;
+    }
 }
