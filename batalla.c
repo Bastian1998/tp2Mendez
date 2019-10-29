@@ -364,9 +364,9 @@ void posicionar_personaje(juego_t* juego, personaje_t personaje){
 //PRE : recibe una instancia del juego la posicion del personaje a eliminar y el bando
 //POST : mueve el elemento a 'destruir' al final del array y disminuye 1 a la cantidad para simular su destruccion
 void destruirPersonaje(juego_t *juego, int posicionDePersonaje, char bando){
-    int cantidad = ((bando == DEFENSIVO_ROHAN) ? juego -> cantidad_rohan : juego -> cantidad_isengard);
-    personaje_t *arrayPersonajes = ((bando == DEFENSIVO_ROHAN) ? juego -> rohan : juego -> isengard);
-    for (int i = posicionDePersonaje - 1; i < cantidad; i++){
+    int cantidad = (bando == DEFENSIVO_ROHAN) ? juego -> cantidad_rohan : juego -> cantidad_isengard;
+    personaje_t *arrayPersonajes = (bando == DEFENSIVO_ROHAN) ? juego -> rohan : juego -> isengard;
+    for (int i = posicionDePersonaje - 1; i < cantidad ; i++){
         arrayPersonajes[i] = arrayPersonajes[i + 1];
     }
     cantidad -= 1;
@@ -402,8 +402,9 @@ bool fueraDeRangoManhattan(personaje_t personaje, int fila, int columna){
 //PRE: recibe el struct personaje, el juego, el bando y el rango (manhattan) de ataque del personaje
 //POST : analiza los casilleros adyacentes para saber cuales son validos segun el algoritmo de manhattan, 
 //devuelve true si encuentra a un enemigo en su rango
-bool enemigosEnRango(juego_t *juego, personaje_t personaje, char bando, personaje_t*enemigos[], int *cantidadEnemigos){
+bool enemigosEnRango(juego_t *juego, int posicionDePersonaje, char bando, personaje_t*enemigos[], int *cantidadEnemigos){
     bool enemigoEncontrado = false;
+    personaje_t personaje = (bando == DEFENSIVO_ROHAN) ? juego -> rohan[posicionDePersonaje] : juego -> isengard[posicionDePersonaje];
     //Recorre columnas
     for (int i = personaje.fila - personaje.rango; i <= personaje.fila + personaje.rango; i++){
         //Recorre filas
@@ -433,7 +434,8 @@ bool enemigosEnRango(juego_t *juego, personaje_t personaje, char bando, personaj
 
 //PRE : recibe un personaje dentro de el array de personajes y un bando
 // POST : mueve al humano o orco una casilla arriba o abajo 
-void moverPersonaje(juego_t *juego, personaje_t *personaje, char bando, int posicionDePersonaje){
+void moverPersonaje(juego_t *juego, char bando, int posicionDePersonaje){
+    personaje_t *personaje = (bando == DEFENSIVO_ROHAN) ? &juego -> rohan[posicionDePersonaje] : &juego -> isengard[posicionDePersonaje];
     int llegadasDeJugador = ((bando == DEFENSIVO_ROHAN ? juego -> llegadas_rohan : juego -> llegadas_isengard));
     juego -> terreno[personaje -> fila][personaje -> columna] = TERRENO;
     personaje -> fila += ((bando == OFENSIVO_ISENGARD) ? 1 : -1);
@@ -445,14 +447,28 @@ void moverPersonaje(juego_t *juego, personaje_t *personaje, char bando, int posi
     }
 }
 
+void imprimirHeridos(personaje_t personaje){
+    if (personaje.codigo == HUMANO)
+        printf("Un Humano ha caido en batalla.\n");
+    else if(personaje.codigo == ELFO)
+        printf("Un Elfo ha caido en batalla.\n");
+    else if (personaje.codigo == ORCO)
+        printf("Un Orco ha caido en batalla.\n");
+    else
+        printf("Un Urukhai ha caido en batalla.\n");
+}
+
 //PRE : Recibe una instancia del juego  y un bando
 //POST: Remueve a todos los personajes de los array rohan y isengard que tengan vida menor  0
 void removerHeridos(juego_t* juego, char bando){
     int cantidad = ((bando == DEFENSIVO_ROHAN) ? juego -> cantidad_rohan : juego -> cantidad_isengard);
     personaje_t *arrayPersonajes = ((bando == DEFENSIVO_ROHAN) ? juego -> rohan : juego -> isengard);
     for(int i = 0; i < cantidad; i++){
-        if(arrayPersonajes[i].vida <= 0)
+        if(arrayPersonajes[i].vida <= 0){
             destruirPersonaje(juego, i, bando);
+            imprimirHeridos(arrayPersonajes[i]);
+            juego -> terreno[arrayPersonajes[i].fila][arrayPersonajes[i].columna] = TERRENO;
+        }
     }
 }
 
@@ -476,25 +492,25 @@ void jugar(juego_t* juego, char bando, int posicion_personaje){
     personaje_t* enemigos[MAX_ENEMIGOS];
     int cantidadEnemigos = 0;
     if (bando == OFENSIVO_ISENGARD && (personajeIsengard).codigo == ORCO ){
-        if(enemigosEnRango(juego, personajeIsengard, bando, enemigos, &cantidadEnemigos)){
+        if(enemigosEnRango(juego, posicion_personaje, bando, enemigos, &cantidadEnemigos)){
             atacarEnemigos(cantidadEnemigos, enemigos, personajeIsengard);
         }
         else
-            moverPersonaje(juego, &personajeIsengard, bando, posicion_personaje);
+            moverPersonaje(juego, bando, posicion_personaje);
     }
     else if (bando == OFENSIVO_ISENGARD && (personajeIsengard).codigo == URUKHAI ){
-        if(enemigosEnRango(juego, personajeIsengard, bando, enemigos, &cantidadEnemigos)){
+        if(enemigosEnRango(juego,posicion_personaje, bando, enemigos, &cantidadEnemigos)){
             ataqueEspecial(cantidadEnemigos, enemigos, personajeIsengard);
         }
     }
     else if (bando == DEFENSIVO_ROHAN && (personajeRohan).codigo == HUMANO ){
-        if(enemigosEnRango(juego, personajeRohan, bando, enemigos, &cantidadEnemigos)){
+        if(enemigosEnRango(juego,posicion_personaje, bando, enemigos, &cantidadEnemigos)){
             atacarEnemigos(cantidadEnemigos, enemigos, personajeRohan);
         }
         else
-            moverPersonaje(juego, &personajeRohan, bando, posicion_personaje);
+            moverPersonaje(juego, bando, posicion_personaje);
     }else{
-        if(enemigosEnRango(juego, personajeRohan, bando, enemigos, &cantidadEnemigos)){
+        if(enemigosEnRango(juego,posicion_personaje, bando, enemigos, &cantidadEnemigos)){
             ataqueEspecial(cantidadEnemigos, enemigos, personajeRohan);
         }
     }

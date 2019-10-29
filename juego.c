@@ -40,7 +40,7 @@ char preguntarPersonaje(char *bando){
 
 void sumarEnergia(juego_t* juego, char* bando){
     int *energiaDeJugador = (*bando == DEFENSIVO_ROHAN) ? &juego -> energiaRohan : &juego -> energiaIsengard;
-    if (energiaDeJugador < 10)
+    if (*energiaDeJugador < 10)
         *energiaDeJugador += 1;
 }
 
