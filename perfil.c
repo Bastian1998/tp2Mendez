@@ -1,4 +1,5 @@
 #include "perfil.h"
+#include <stdio.h>
 #define ACCION 'A'
 #define COMEDIA 'C'
 #define DRAMA 'D'
