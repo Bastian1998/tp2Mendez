@@ -83,7 +83,7 @@ void jugar(juego_t* juego, char bando, int posicion_personaje);
 
 //PRE : Recibe una inicial de un personaje 
 //POST : Devuelve el personaje con todos sus datos cargados
-personaje_t generarPersonaje( juego_t *juego, char inicialDePersonaje);
+personaje_t generarPersonaje( juego_t *juego, char inicialDePersonaje, char bando);
 
 //PRE : Recibe 2 numeros enteros positivos
 //POST : Devuelve un numero aleatorio entre ellos

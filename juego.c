@@ -8,7 +8,7 @@ void cambiarBando(char *bando){
 //PRE : Recibe una  instancia del juego original y bando
 //POST : Devuelve la cantidad de personajes dentro del array del jugador correspondiente
 int obtenerCantidadDeBando(juego_t *juego, char *bando){
-    return (*bando == OFENSIVO_ISENGARD) ? juego -> cantidad_isengard : juego -> cantidad_rohan;;
+    return (*bando == OFENSIVO_ISENGARD) ? juego -> cantidad_isengard : juego -> cantidad_rohan;
 }
 
 //PRE : Recibe la inicial de un personaje y el bando
@@ -51,11 +51,21 @@ void imprimirJugadorActual(char *bando){
         printf("ISENGARD(O/U): \n");
     }
 }
+//PRE : Recibe la energia de un bando y la inicial de personaje
+//POST : devuelve True si la energia  es suficiente para generar el personaje
+bool suficienteEnergia(int energia , char inicialDePersonaje){
+    if ((inicialDePersonaje == 'O' || inicialDePersonaje == 'H') && energia < 3)
+        return false;
+    else if ((inicialDePersonaje == 'E' || inicialDePersonaje == 'U') && energia < 8)
+        return false;
+    return true;
+}
 
 //PRE : Recibe una instancia iniciada del juego y el bando(turno del que jugara)
 //POST : Recorre todo el array de personajes de  un jugador y juega con cada personaje
 void jugarTurno(juego_t* juego, char *bando){
     personaje_t personaje;
+    int energia = (*bando == OFENSIVO_ISENGARD) ? juego -> energiaIsengard : juego -> energiaRohan;
     for (int i = 0; i < obtenerCantidadDeBando(juego, bando); i++){ 
         jugar(juego, *bando, i);
     }
@@ -64,21 +74,21 @@ void jugarTurno(juego_t* juego, char *bando){
         sumarEnergia(juego, bando);
         imprimirJugadorActual(bando);
         char inicialDePersonaje = preguntarPersonaje(bando);
-        if (inicialDePersonaje != '.'){
-            personaje = generarPersonaje(juego, inicialDePersonaje);
+        if (inicialDePersonaje != '.' && suficienteEnergia(energia, inicialDePersonaje)){
+            personaje = generarPersonaje(juego, inicialDePersonaje, *bando);
             posicionar_personaje(juego, personaje);
         }
     }else{
         sumarEnergia(juego, bando);
-        if (*bando == juego -> bandoAutomatico){
-            personaje = generarPersonaje(juego, (juego -> bandoAutomatico == DEFENSIVO_ROHAN) ? HUMANO : ORCO);
+        if (*bando == juego -> bandoAutomatico && energia >= 3){
+            personaje = generarPersonaje(juego, (juego -> bandoAutomatico == DEFENSIVO_ROHAN) ? HUMANO : ORCO, *bando);
             posicionar_personaje(juego, personaje);
         }
-        else{
+        else if (*bando != juego -> bandoAutomatico){
             imprimirJugadorActual(bando);
             char inicialDePersonaje = preguntarPersonaje(bando);
-            if (inicialDePersonaje != '.'){
-                personaje = generarPersonaje(juego, inicialDePersonaje);
+            if (inicialDePersonaje != '.' && suficienteEnergia(energia, inicialDePersonaje)){
+                personaje = generarPersonaje(juego, inicialDePersonaje, *bando);
                 posicionar_personaje(juego, personaje);
             }
         }
