@@ -93,9 +93,9 @@ char determinarBando(int zodiaco, char genero, int maldades){
     //Indico los bandos ofensivo y defensivo como 1 y 2 respectivamente
     char bando = 'N';
     if((zodiaco % 4 == FUEGO || zodiaco % 4 == AIRE) && (genero == COMEDIA || genero == TERROR) && maldades >= 50)
-        bando = 'O';
+        bando = 'I';
     else if ((zodiaco % 4 == AGUA || zodiaco % 4 == TIERRA) && (genero == ACCION || genero == DRAMA) && maldades < 50)
-        bando = 'D';
+        bando = 'R';
     return bando;
 }
 //PRE: maldades y cantidad de mascotas son valores validos
@@ -119,7 +119,7 @@ void perfil ( char * tipo , int * intensidad ){
         if (*tipo == 'N')
             printf("You don't belong anywhere, TRY AGAIN! (Bando indefinido) \n");
     }while(*tipo == 'N');
-    if (*tipo == 'O')
+    if (*tipo == 'I')
         printf("ofensivo: STAND IN YOUR FEET ORCISH BROTHER!!, you have been drafted to assault ROHANS'S kingdom in the name of ISENGARD as a LV %i Berserker\n", *intensidad);
     else
         printf("defensivo: REJOICE WARRIOR!!, you haven been drafted to serve and  protect ROHAN'S kingdom from the orcish tyranny as a LV %i Paladin\n", *intensidad);

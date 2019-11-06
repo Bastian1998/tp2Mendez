@@ -8,7 +8,7 @@
 // Creara una matriz de 10 x 10 o (FIL x COL)
 #define MAX_TERRENO_FIL 10
 #define MAX_TERRENO_COL 10
-#define MAX_PERSONAJES 100
+#define MAX_PERSONAJES 1000
 #define MAX_VIDA_ROHAN 10
 #define MAX_VIDA_ISENGARD 10
 #define MAX_ENERGIA_INICIAL 5
@@ -26,7 +26,7 @@
 #define ENERGIA_ORCO 3
 #define ENERGIA_ELFO 8
 #define ENERGIA_URUKHAI 8
-#define MAX_ENEMIGOS 50
+#define MAX_ENEMIGOS 500
 #define TERRENO '#'
 typedef struct personaje {
 	char codigo;
@@ -55,6 +55,7 @@ typedef struct juego {
 
 	int cantidadJugadores;
 	char bandoAutomatico;
+	char bandoManual;
 	bool isPvP;
 } juego_t;
 //Agregar a la estructura n bool is pvp que viene de preguntar en incializar

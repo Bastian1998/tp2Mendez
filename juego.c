@@ -84,7 +84,7 @@ void jugarTurno(juego_t* juego, char *bando){
             personaje = generarPersonaje(juego, (juego -> bandoAutomatico == DEFENSIVO_ROHAN) ? HUMANO : ORCO, *bando);
             posicionar_personaje(juego, personaje);
         }
-        else if (*bando != juego -> bandoAutomatico){
+        else if (*bando == juego -> bandoManual){
             imprimirJugadorActual(bando);
             char inicialDePersonaje = preguntarPersonaje(bando);
             if (inicialDePersonaje != '.' && suficienteEnergia(energia, inicialDePersonaje)){
@@ -95,8 +95,6 @@ void jugarTurno(juego_t* juego, char *bando){
     }
     cambiarBando(bando);
 }
-
-//cosas por hacer:  los orcos y humanos no se mueven , mostrar energia vida etc , sumar un punto de energia al final del turno, agregar el turno del usuario duarante player vs pc
 
 int main(){
     juego_t juego;
@@ -110,3 +108,7 @@ int main(){
     }
     return 0;
 }
+
+// removi personaje_t *personaje = (bando == DEFENSIVO_ROHAN) ? &juego -> rohan[posicion_personaje] : &juego -> isengard[posicion_personaje];
+ //   juego -> terreno[personaje -> fila][personaje -> columna] = personaje -> codigo;
+ // del jugar 

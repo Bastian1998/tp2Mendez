@@ -7,6 +7,8 @@ int numeroRandom(int a, int b){
     return rand() % (b - a + 1) + a;
 }
 
+//PRE : Recibe un string y la cantidad de veces que debe ser impreso
+//PRO : Imprime por pantalla el string n veces
 void imprimirVariasVeces(char* string, int n){
     for (int i = 0; i < n; i++){
         printf("%s", string);
@@ -18,6 +20,7 @@ void imprimirVariasVeces(char* string, int n){
 int calcularPlus(int intensidad){
     return intensidad * numeroRandom(0,5);
 }
+
 // Funciones para dar outputs de diferente color en la terminal
 //-------------------------------------------------------------
 void red() {
@@ -344,7 +347,10 @@ void inicializar_juego(juego_t* juego){
         juego -> plus_rohan = calcularPlus(intensidad2);
         juego -> plus_isengard = calcularPlus(intensidad1);
     }
-    if(!juego -> isPvP) juego->bandoAutomatico = bando2;
+    if(!juego -> isPvP){
+        juego -> bandoAutomatico = bando2;
+        juego -> bandoManual = bando1;
+    }
     asignarPersonajesEspeciales(juego);
 }
 // PRE : recibe una instancia del  juego ya inicializado y un personaje con sus datos cargados
@@ -497,9 +503,7 @@ void ataqueEspecial( int cantidadEnemigos, personaje_t* enemigos[], personaje_t 
 void jugar(juego_t* juego, char bando, int posicion_personaje){
     personaje_t personajeIsengard = juego -> isengard[posicion_personaje];
     personaje_t personajeRohan = juego -> rohan[posicion_personaje];
-    personaje_t* enemigos[MAX_ENEMIGOS];
-    personaje_t *personaje = (bando == DEFENSIVO_ROHAN) ? &juego -> rohan[posicion_personaje] : &juego -> isengard[posicion_personaje];
-    juego -> terreno[personaje -> fila][personaje -> columna] = personaje -> codigo;
+    personaje_t *enemigos[MAX_ENEMIGOS];
     int cantidadEnemigos = 0;
     if (bando == OFENSIVO_ISENGARD && (personajeIsengard).codigo == ORCO ){
         if(enemigosEnRango(juego, posicion_personaje, bando, enemigos, &cantidadEnemigos)){
@@ -525,3 +529,4 @@ void jugar(juego_t* juego, char bando, int posicion_personaje){
         }
     }
 }
+//MOVER el colocar personaje en terreno del ataquespecial a una funcion qu voy a crear que carga todos los personajes antes de imprimir.(actualizacion)
